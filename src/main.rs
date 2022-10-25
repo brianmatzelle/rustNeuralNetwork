@@ -6,6 +6,7 @@ fn main() {
         file_path: String::from("./data/trainingData.txt")
     };
 
-    let topology: Vec<u8> = Vec::new();
-    training_data.get_topology(&topology);
+    let mut topology: Vec<u8> = Vec::new();
+    training_data.get_topology(&mut topology);
+    println!("Topology: {:?}", topology);
 }
