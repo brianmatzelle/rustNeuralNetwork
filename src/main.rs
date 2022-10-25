@@ -1,10 +1,11 @@
-mod trainingData;
-use trainingData::TrainingData;
+mod training_data;
+use training_data::TrainingData;
 
 fn main() {
-    let trainingData = TrainingData {
+    let training_data = TrainingData {
         file_path: String::from("./data/trainingData.txt")
     };
 
-    let mut topology: Vec<u8> = Vec::new();
+    let topology: Vec<u8> = Vec::new();
+    training_data.get_topology(&topology);
 }
