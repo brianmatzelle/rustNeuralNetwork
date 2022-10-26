@@ -8,7 +8,7 @@ pub struct Net {
 }
 
 impl Net {
-    pub fn new(topology: &Vec<u8>) -> Net {
+    pub fn new(topology: &Vec<u8>) -> Net { // done
         let mut net = Net {
             layers: Vec::new(),
             error: 0.0,
@@ -34,7 +34,7 @@ impl Net {
         net                                    // return net
     }
 
-    pub fn get_results(&mut self, result_vals: &mut Vec<f64>) {
+    pub fn get_results(&mut self, result_vals: &mut Vec<f64>) { // done
         result_vals.clear();
         let mut n = 0;
         while n < (self.layers.last().unwrap().0.len() - 1) {
@@ -43,7 +43,7 @@ impl Net {
         }
     }
 
-    pub fn back_prop(&mut self, target_vals: &Vec<f64>) {
+    pub fn back_prop(&mut self, target_vals: &Vec<f64>) {   // done
         let mut output_layer = self.layers.last_mut().unwrap();
         self.error = 0.0;
 
@@ -74,16 +74,16 @@ impl Net {
 
         layer_num = self.layers.len() - 1;
         for i in (0..layer_num).rev() {
-            let prev_layer = self.layers[i - 1].clone();
-            let layer = &mut self.layers[i];
+            let layer = self.layers[i].clone();
+            let prev_layer = &mut self.layers[i - 1];
 
             for n in 0..layer.len() - 1 {
-                layer.0[n].update_input_weights(&prev_layer);
+                layer.0[n].update_input_weights(prev_layer);
             }
         }
     }
 
-    pub fn feed_forward(&mut self, input_vals: &Vec<f64>) {
+    pub fn feed_forward(&mut self, input_vals: &Vec<f64>) { // done
         for i in 0..input_vals.len() - 1 {
             self.layers[0].0[i].set_output_val(input_vals[i]);
         }

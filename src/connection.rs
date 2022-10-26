@@ -1,7 +1,7 @@
 #[derive(Clone)]
 pub struct Connection {
-    weight: f64,
-    delta_weight: f64,
+    pub weight: f64,
+    pub delta_weight: f64,
 }
 
 impl Connection {
