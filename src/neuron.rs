@@ -20,4 +20,10 @@ impl Neuron {
     pub fn set_output_val(&mut self, val: f32) {
 
     }
+
+    pub fn get_output_val(&mut self) -> f64 {
+
+        let x = 0.0;    // NOT IMPLEMENTED
+        x
+    }
 }

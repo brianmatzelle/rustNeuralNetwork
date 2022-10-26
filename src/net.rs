@@ -19,7 +19,7 @@ impl Net {
             layers: Vec::new(),
             error: 0.0,
             recent_average_error: 0.0,
-            recent_average_smoothing_factor: 0.0,
+            recent_average_smoothing_factor: 100.0,
         };
         let num_layers = topology.len();
         for layer_num in 0..num_layers {
@@ -38,5 +38,14 @@ impl Net {
         }
 
         net                                    // return net
+    }
+
+    pub fn get_results(&mut self, result_vals: &mut Vec<f64>) {
+        result_vals.clear();
+        let mut n = 0;
+        while n < (self.layers.last().unwrap().0.len() - 1) {
+            result_vals.push(self.layers.last_mut().unwrap().0[n].get_output_val());
+            n += 1;
+        }
     }
 }
