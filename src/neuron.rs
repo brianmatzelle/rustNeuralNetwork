@@ -7,7 +7,7 @@ pub struct Neuron {
 }
 
 impl Neuron {
-    pub fn new() -> Neuron {
+    pub fn new(num_outputs: u8, neuron_num: u8) -> Neuron {
         Neuron {
             eta: 0.0,
             alpha: 0.0,
@@ -15,5 +15,9 @@ impl Neuron {
             my_index: 0,
             gradient: 0.0,
         }
+    }
+    
+    pub fn set_output_val(&mut self, val: f32) {
+
     }
 }
