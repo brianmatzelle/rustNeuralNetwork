@@ -24,7 +24,8 @@ impl Net {
             let mut neuron_num = 0;
             while neuron_num <= topology[layer_num] {                                   // make neurons for each layer, <= to include the bias neuron
                 net.layers[layer_num].push(Neuron::new(num_outputs, neuron_num.into()));
-                println!("Made a Neuron!");
+                if neuron_num == topology[layer_num] { println!("Made a Neuron! -bias"); }
+                else { println!("Made a Neuron!"); }
                 neuron_num += 1;
             }
             println!();
