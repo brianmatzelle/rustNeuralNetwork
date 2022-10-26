@@ -4,7 +4,7 @@ struct Layer(Vec<Neuron>);              // vector with neurons
 impl Layer {                            // same as typedef in c++
     fn push(&mut self, n: Neuron) {     // so we can use .push() from the vector library
         self.0.push(n);                 // self.0 is self's vector
-    }
+    }                                   // realized after that this is redundant
 }
 pub struct Net {
     layers: Vec<Layer>,
