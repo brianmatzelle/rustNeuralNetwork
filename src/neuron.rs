@@ -2,7 +2,7 @@ pub struct Neuron {
     eta: f64,
     alpha: f64,
     output_val: f64,
-    myIndex: u16,
+    my_index: u16,
     gradient: f64,
 }
 
@@ -12,7 +12,7 @@ impl Neuron {
             eta: 0.0,
             alpha: 0.0,
             output_val: 0.0,
-            myIndex: 0,
+            my_index: 0,
             gradient: 0.0,
         }
     }

@@ -12,5 +12,5 @@ fn main() {
     let mut topology: Vec<u8> = Vec::new();
     training_data.get_topology(&mut topology);
     println!("Topology: {:?}", topology);
-    let mut network = Net::new();
+    let mut network = Net::new(&topology);
 }
