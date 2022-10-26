@@ -1,6 +1,6 @@
 use crate::neuron::Neuron;
 use crate::layer::{Layer, self};
-pub struct Net {
+pub struct Net {    // done
     layers: Vec<Layer>,
     error: f64,
     recent_average_error: f64,
@@ -23,7 +23,7 @@ impl Net {
             
             let mut neuron_num = 0;
             while neuron_num <= topology[layer_num] {                                   // make neurons for each layer, <= to include the bias neuron
-                net.layers[layer_num].push(Neuron::new(num_outputs, neuron_num));
+                net.layers[layer_num].push(Neuron::new(num_outputs, neuron_num.into()));
                 println!("Made a Neuron!");
                 neuron_num += 1;
             }
@@ -74,7 +74,7 @@ impl Net {
 
         layer_num = self.layers.len() - 1;
         for i in (0..layer_num).rev() {
-            let layer = self.layers[i].clone();
+            let layer = self.layers[i].clone();             // encountered ownership problems here, could bug
             let prev_layer = &mut self.layers[i - 1];
 
             for n in 0..layer.len() - 1 {
@@ -95,4 +95,5 @@ impl Net {
             }
         }
     }
+
 }

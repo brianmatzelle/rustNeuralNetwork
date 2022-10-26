@@ -1,3 +1,5 @@
+use std::fmt::DebugList;
+
 use fastapprox::fast::tanh;
 use crate::layer::Layer;
 use crate::connection::Connection;
@@ -18,13 +20,13 @@ pub fn random_weight() -> f64 { // done ? could bug
 }
 
 impl Neuron {
-    pub fn new(num_outputs: u8, neuron_num: u8) -> Neuron { // done
+    pub fn new(num_outputs: u8, my_index: usize) -> Neuron { // done
         let mut neuron = Neuron {
             output_weights: Vec::new(),
             eta: 0.15,
             alpha: 0.5,
             output_val: 0.0,
-            my_index: 0,
+            my_index,
             gradient: 0.0,
         };
 
@@ -35,12 +37,12 @@ impl Neuron {
         neuron
     }
 
-    fn transfer_function(&mut self, x: f64) -> f64 { // done
+    fn transfer_function(&self, x: f64) -> f64 { // done
         let y: f64 = tanh(x as f32) as f64;
         y
     }
 
-    fn transfer_function_derivative(&mut self, x: f64) -> f64 { // done
+    fn transfer_function_derivative(&self, x: f64) -> f64 { // done
         let y = 1.0 - x * x;
         y
     }
@@ -55,22 +57,22 @@ impl Neuron {
         sum
     }
 
-    pub fn set_output_val(&mut self, val: f64) {
-
+    pub fn set_output_val(&mut self, val: f64) {    // done
+        self.output_val = val;
     }
 
-    pub fn get_output_val(&mut self) -> f64 {
-
-        let x = 0.0;    // NOT IMPLEMENTED
-        x
+    pub fn get_output_val(&self) -> f64 {           // done
+        self.output_val
     }
 
-    pub fn calc_output_gradients(&mut self, target_vals: f64) {
-
+    pub fn calc_output_gradients(&mut self, target_val: f64) { // done
+        let delta = target_val - self.output_val;
+        self.gradient = delta * self.transfer_function_derivative(self.output_val);
     }
 
-    pub fn calc_hidden_gradients(&mut self, next_layer: &Layer) {
-
+    pub fn calc_hidden_gradients(&mut self, next_layer: &Layer) { // done
+        let dow = self.sum_DOW(next_layer);
+        self.gradient = dow * self.transfer_function_derivative(self.output_val);
     }
     
     pub fn update_input_weights(&self, prev_layer: &mut Layer) { // done
@@ -91,6 +93,13 @@ impl Neuron {
     }
     
     pub fn feed_forward(&mut self, prev_layer: &Layer) {
+        let mut sum: f64 = 0.0;
 
+        for n in 0..prev_layer.len() {
+            sum += prev_layer.0[n].get_output_val()
+            * prev_layer.0[n].output_weights[self.my_index].weight;
+        }
+
+        self.output_val = self.transfer_function(sum);
     }
 }
