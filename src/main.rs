@@ -1,6 +1,8 @@
 mod training_data;
 mod net;
 mod neuron;
+mod layer;
+mod connection;
 use training_data::TrainingData;
 use net::Net;
 

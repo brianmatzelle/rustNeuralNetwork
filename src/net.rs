@@ -1,11 +1,5 @@
 use crate::neuron::Neuron;
-
-struct Layer(Vec<Neuron>);              // vector with neurons
-impl Layer {                            // same as typedef in c++
-    fn push(&mut self, n: Neuron) {     // so we can use .push() from the vector library
-        self.0.push(n);                 // self.0 is self's vector
-    }                                   // realized after that this is redundant
-}
+use crate::layer::{Layer, self};
 pub struct Net {
     layers: Vec<Layer>,
     error: f64,
@@ -34,7 +28,7 @@ impl Net {
                 neuron_num += 1;
             }
             println!();
-            net.layers.last_mut().unwrap().0.last_mut().unwrap().set_output_val(1.0);                           // set the value of the bias neuron to 1.0 (last neuron in layer)
+            net.layers.last_mut().unwrap().last_mut().unwrap().set_output_val(1.0);                           // set the value of the bias neuron to 1.0 (last neuron in layer)
         }
 
         net                                    // return net
@@ -46,6 +40,59 @@ impl Net {
         while n < (self.layers.last().unwrap().0.len() - 1) {
             result_vals.push(self.layers.last_mut().unwrap().0[n].get_output_val());
             n += 1;
+        }
+    }
+
+    pub fn back_prop(&mut self, target_vals: &Vec<f64>) {
+        let mut output_layer = self.layers.last_mut().unwrap();
+        self.error = 0.0;
+
+        for n in 0..output_layer.len() - 1 {
+            let delta = target_vals[n] - output_layer.0[n].get_output_val();    // output_layer.0 is the vector of neurons, we are taking n, a neuron
+            self.error += delta * delta;
+        }
+        self.error /= (output_layer.len() - 1) as f64;
+        self.error = self.error.sqrt();
+
+        self.recent_average_error = 
+            (self.recent_average_error * self.recent_average_smoothing_factor + self.error)
+            / (self.recent_average_smoothing_factor + 1.0);
+        
+        for n in 0..output_layer.len() - 1 {
+            output_layer.0[n].calc_output_gradients(target_vals[n]);
+        }
+
+        let mut layer_num = self.layers.len() - 2;
+        for i in (0..layer_num).rev() {
+            let next_layer = self.layers[i + 1].clone();
+            let hidden_layer = &mut self.layers[i];
+
+            for n in 0..hidden_layer.len() {
+                hidden_layer.0[n].calc_hidden_gradients(&next_layer);
+            }
+        }
+
+        layer_num = self.layers.len() - 1;
+        for i in (0..layer_num).rev() {
+            let prev_layer = self.layers[i - 1].clone();
+            let layer = &mut self.layers[i];
+
+            for n in 0..layer.len() - 1 {
+                layer.0[n].update_input_weights(&prev_layer);
+            }
+        }
+    }
+
+    pub fn feed_forward(&mut self, input_vals: &Vec<f64>) {
+        for i in 0..input_vals.len() - 1 {
+            self.layers[0].0[i].set_output_val(input_vals[i]);
+        }
+        for layer_num in 1..self.layers.len() {
+            let prev_layer = self.layers[layer_num - 1].clone();
+
+            for n in 0..self.layers[layer_num].len() - 1 {
+                self.layers[layer_num].0[n].feed_forward(&prev_layer);
+            }
         }
     }
 }
