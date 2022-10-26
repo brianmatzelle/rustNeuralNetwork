@@ -1,3 +1,5 @@
+use crate::neuron::Neuron;
+
 type Layer = Vec<Neuron>;
 pub struct Net {
     error: f64,

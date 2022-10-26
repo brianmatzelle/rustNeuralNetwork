@@ -12,7 +12,7 @@ impl Neuron {
             eta: 0.0,
             alpha: 0.0,
             output_val: 0.0,
-            myIndex: 0.0,
+            myIndex: 0,
             gradient: 0.0,
         }
     }

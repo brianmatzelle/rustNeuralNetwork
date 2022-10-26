@@ -1,6 +1,7 @@
 mod training_data;
-use training_data::TrainingData;
 mod net;
+mod neuron;
+use training_data::TrainingData;
 use net::Net;
 
 fn main() {
