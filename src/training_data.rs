@@ -15,7 +15,9 @@ impl TrainingData {
         t
     }
     pub fn get_topology(&self, topology: &mut Vec<u8>)  {
-        let line = self.reader.lines().nth(0).unwrap().unwrap();
+        // let line = self.reader.lines().nth(0).unwrap().unwrap();
+        let contents = self.reader.lines();
+        let line = contents.unw
         for c in line.chars() {
             if c.is_numeric() {
                 topology.push(c as u8 - 0x30);
