@@ -43,5 +43,5 @@ impl TrainingData {
         println!("buffer: {}, line: {}", buffer, line);
         println!();
         return input_vals.len();
-    }
+    }       // NOT FINISHEDDDD FINISH THIS FUNCTION YOU GOOB
 }
