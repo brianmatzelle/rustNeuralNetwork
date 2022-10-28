@@ -23,6 +23,7 @@ fn main() {
     
     while (!training_data.is_eof()) {
         training_pass += 1;
+        print!("i:{} ", training_pass);
         training_data.get_next_inputs(&mut input_vals);
     }
 }
