@@ -3,7 +3,7 @@ use std::io::{self, BufReader, BufRead, Read};
 
 pub struct TrainingData {
     // training_data_file: File,
-    reader: BufReader<File>,
+    pub reader: BufReader<File>,
 }
 
 impl TrainingData { 
@@ -24,8 +24,7 @@ impl TrainingData {
         }
     }
 
-    pub fn is_eof(&mut self) -> bool {
-        let mut empty: &[u8] = &[];
+    pub fn is_eof(&mut self, line: &mut String) -> bool {
         let mut buffer = String::new();
 
         let bytes = self.reader.by_ref().read_line(&mut buffer).unwrap();
@@ -33,15 +32,14 @@ impl TrainingData {
         if bytes == 0 {
             result = true;
         }
+        *line = buffer;
         result
     }
 
-    pub fn get_next_inputs(&mut self, input_vals: &mut Vec<f64>) -> usize {
+    pub fn get_next_inputs(&mut self, input_vals: &mut Vec<f64>, line: &mut String) -> usize {
         input_vals.clear();
-        let mut buffer = String::new();
-        let mut line = self.reader.by_ref().read_line(&mut buffer).unwrap();
-        println!("buffer: {}, line: {}", buffer, line);
-        println!();
+        println!("{}", line);
+        
         return input_vals.len();
-    }       // NOT FINISHEDDDD FINISH THIS FUNCTION YOU GOOB
+    }
 }
