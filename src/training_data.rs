@@ -36,10 +36,27 @@ impl TrainingData {
         result
     }
 
-    pub fn get_next_inputs(&mut self, input_vals: &mut Vec<f64>, line: &mut String) -> usize {
+    pub fn get_next_inputs(&self, input_vals: &mut Vec<f64>, line: &mut String) -> usize {
         input_vals.clear();
-        println!("{}", line);
+        let parsed_string: Vec<&str> = line.split(' ').collect();
+        input_vals.push(parsed_string[1].parse::<f64>().unwrap());
+        input_vals.push(parsed_string[2].parse::<f64>().unwrap());
         
-        return input_vals.len();
+        input_vals.len()
+    }
+
+    pub fn get_target_outputs(&self, target_vals: &mut Vec<f64>, line: &mut String) -> usize{
+        target_vals.clear();
+        let parsed_string: Vec<&str> = line.split(' ').collect();
+        // println!("Parsed target: {}", parsed_string[1]);
+        target_vals.push(parsed_string[1].parse::<f64>().unwrap());
+
+        target_vals.len()
+    }
+
+    pub fn getline(&mut self, line: &mut String){
+        let mut buffer = String::new();
+        self.reader.by_ref().read_line(&mut buffer).unwrap();
+        *line = buffer;
     }
 }
