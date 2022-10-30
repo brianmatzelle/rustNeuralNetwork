@@ -50,7 +50,7 @@ impl Net {
         let mut output_layer = self.layers.last_mut().unwrap();
         self.error = 0.0;
 
-        for n in 0..output_layer.len() {
+        for n in (0..output_layer.len() - 1) {
             let delta = target_vals[n] - output_layer.0[n].get_output_val();    // output_layer.0 is the vector of neurons, we are taking n, a neuron
             self.error += delta * delta;
         }
@@ -61,7 +61,7 @@ impl Net {
             (self.recent_average_error * self.recent_average_smoothing_factor + self.error)
             / (self.recent_average_smoothing_factor + 1.0);
         
-        for n in 0..output_layer.len() {
+        for n in 0..output_layer.len() - 1 {
             output_layer.0[n].calc_output_gradients(target_vals[n]);
         }
 
@@ -96,11 +96,14 @@ impl Net {
         // }
         layer_num = self.layers.len() - 1;
         while layer_num > 0 {
-            let layer = self.layers[layer_num].clone();             // encountered ownership problems here, could bug
-            let prev_layer =  &mut self.layers[layer_num - 1];
+            unsafe {
+                let layer = &mut self.layers[layer_num];             // encountered ownership problems here, could bug
+                let prev_layer =  &mut &mut self.layers[layer_num - 1].clone();
 
-            for n in 0..layer.len() {
-                layer.0[n].update_input_weights(prev_layer);
+                for n in 0..self.layers[layer_num].len() {
+                    layer.0[n].update_input_weights(prev_layer);
+                    // self.layers[layer_num].0[n].update_input_weights(&mut self.layers[layer_num - 1]);
+                }
             }
             layer_num -= 1;
         }

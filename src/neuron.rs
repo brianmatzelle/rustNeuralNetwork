@@ -78,6 +78,7 @@ impl Neuron {
     pub fn update_input_weights(&self, prev_layer: &mut Layer) { // done
         for n in 0..prev_layer.len() {
             let neuron = &mut prev_layer.0[n];
+            println!("my_index: {}", self.my_index);
             let old_delta_weight = neuron.output_weights[self.my_index].delta_weight;
 
             let new_delta_weight = 
