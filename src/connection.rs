@@ -1,3 +1,5 @@
+use crate::neuron::random_weight;
+
 #[derive(Clone)]
 #[derive(Debug)]
 pub struct Connection {
@@ -8,8 +10,8 @@ pub struct Connection {
 impl Connection {
     pub fn new() -> Connection {
         Connection {
-            weight: 0.0,
-            delta_weight: 0.0,
+            weight: random_weight(),
+            delta_weight: 1.0,
         }
     }
 }

@@ -1,6 +1,5 @@
 use std::fmt::DebugList;
-
-use fastapprox::fast::tanh;
+use utils::math::sigmoid;
 use crate::layer::Layer;
 use crate::connection::Connection;
 
@@ -28,7 +27,7 @@ impl Neuron {
             alpha: 0.5,
             output_val: 0.0,
             my_index,
-            gradient: 0.0,
+            gradient: 1.0,
         };
 
         for _ in 0..num_outputs as usize {
@@ -38,17 +37,20 @@ impl Neuron {
     }
 
     fn transfer_function(&self, x: f64) -> f64 { // done
-        let y: f64 = tanh(x as f32) as f64;
-        y
+        // let z = x as f32;
+        // println!("x: {}, z: {}", x, z);
+        // let y = tanh(x as f32);
+        // println!("tanh = {}", y);
+        // tanh(x as f32) as f64
+        sigmoid(x)
     }
 
     fn transfer_function_derivative(&self, x: f64) -> f64 { // done
-        let y = 1.0 - x * x;
-        y
+        (1.0 - x) * x
     }
 
 
-    fn sum_DOW(&self, next_layer: &Layer) -> f64 { // done
+    fn sum_dow(&self, next_layer: &Layer) -> f64 { // done
         let mut sum: f64 = 0.0;
         
         for n in 0..next_layer.len() - 1 {
@@ -71,7 +73,7 @@ impl Neuron {
     }
 
     pub fn calc_hidden_gradients(&mut self, next_layer: &Layer) { // done
-        let dow = self.sum_DOW(next_layer);
+        let dow = self.sum_dow(next_layer);
         self.gradient = dow * self.transfer_function_derivative(self.output_val);
     }
     
@@ -99,7 +101,11 @@ impl Neuron {
             sum += prev_layer.0[n].get_output_val()
             * prev_layer.0[n].output_weights[self.my_index].weight;
         }
+        println!();
+        println!("index[{}] sum: {}", self.my_index, sum);
 
         self.output_val = self.transfer_function(sum);
+        println!("output: {}", self.output_val);
+        println!();
     }
 }

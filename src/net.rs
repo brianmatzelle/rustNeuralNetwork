@@ -52,7 +52,6 @@ impl Net {
 
         for n in 0..output_layer.len() - 1 {
             let delta = target_vals[n] - output_layer.0[n].get_output_val();    // output_layer.0 is the vector of neurons, we are taking n, a neuron
-            println!("delta[{}]: {}", n, delta);
             self.error += delta * delta;
         }
         self.error /= (output_layer.len() - 1) as f64;
@@ -93,6 +92,8 @@ impl Net {
     }
 
     pub fn feed_forward(&mut self, input_vals: &Vec<f64>) { // done
+        assert!(input_vals.len() == self.layers[0].len() - 1);
+
         for i in 0..input_vals.len() {
             self.layers[0].0[i].set_output_val(input_vals[i]);
         }
@@ -101,13 +102,16 @@ impl Net {
             let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);
             let prev_layer = prev_layer_vec.last_mut().unwrap();
             let layer = &mut layer_vec[0];
-
+            println!("prev_layer[{}]: {:?}", layer_num-1, prev_layer);
             // for n in 0..self.layers[layer_num].len() - 1 {
-            //     self.layers[layer_num].0[n].feed_forward(&prev_layer);
+                //     self.layers[layer_num].0[n].feed_forward(&prev_layer);
             // }
             for n in 0..layer.len() - 1 {
                 layer.0[n].feed_forward(prev_layer);
             }
+            println!();
+            println!("cur_layer[{}]: {:?}", layer_num, layer);
+            println!("------------------------------------------------------------");
         }
     }
 
