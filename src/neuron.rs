@@ -5,6 +5,7 @@ use crate::layer::Layer;
 use crate::connection::Connection;
 
 #[derive(Clone)]
+#[derive(Debug)]
 pub struct Neuron {
     output_weights: Vec<Connection>,
     eta: f64,

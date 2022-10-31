@@ -1,4 +1,5 @@
 #[derive(Clone)]
+#[derive(Debug)]
 pub struct Connection {
     pub weight: f64,
     pub delta_weight: f64,

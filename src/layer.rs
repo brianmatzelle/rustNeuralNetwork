@@ -1,4 +1,5 @@
 use crate::neuron::Neuron;
+#[derive(Debug)]
 pub struct Layer(pub Vec<Neuron>);              // vector with neurons
 impl Layer {                            // same as typedef in c++
     pub fn push(&mut self, n: Neuron) {     // so we can use .push() from the vector library

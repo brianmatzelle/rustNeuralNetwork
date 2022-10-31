@@ -96,15 +96,20 @@ impl Net {
         // }
         layer_num = self.layers.len() - 1;
         while layer_num > 0 {
-            unsafe {
-                let layer = &mut self.layers[layer_num];             // encountered ownership problems here, could bug
-                let prev_layer =  &mut &mut self.layers[layer_num - 1].clone();
+                // let layer = &mut self.layers[layer_num];             // encountered ownership problems here, could bug
+                // let prev_layer =  &mut self.layers[layer_num - 1];
+                let size = self.layers[layer_num].len();
+                let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);  // NOT SURE IF CORRECT, FIX MID
+                println!("layer_vec: {:?}", layer_vec);
+                println!();
+                println!("prev_layer_vec: {:?}", prev_layer_vec);
+                let layer = &mut layer_vec[0];
+                let prev_layer =  prev_layer_vec.last_mut().unwrap();
 
-                for n in 0..self.layers[layer_num].len() {
+                for n in 0..size {
                     layer.0[n].update_input_weights(prev_layer);
                     // self.layers[layer_num].0[n].update_input_weights(&mut self.layers[layer_num - 1]);
                 }
-            }
             layer_num -= 1;
         }
     }
