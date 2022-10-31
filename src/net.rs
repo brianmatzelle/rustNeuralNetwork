@@ -47,11 +47,12 @@ impl Net {
     }
 
     pub fn back_prop(&mut self, target_vals: &Vec<f64>) {   // done
-        let mut output_layer = self.layers.last_mut().unwrap();
+        let output_layer = self.layers.last_mut().unwrap();
         self.error = 0.0;
 
-        for n in (0..output_layer.len() - 1) {
+        for n in 0..output_layer.len() - 1 {
             let delta = target_vals[n] - output_layer.0[n].get_output_val();    // output_layer.0 is the vector of neurons, we are taking n, a neuron
+            println!("delta[{}]: {}", n, delta);
             self.error += delta * delta;
         }
         self.error /= (output_layer.len() - 1) as f64;
@@ -65,50 +66,27 @@ impl Net {
             output_layer.0[n].calc_output_gradients(target_vals[n]);
         }
 
-        // let mut layer_num = self.layers.len() - 2;
-        // for i in (0..layer_num).rev() {
-        //     let next_layer = self.layers[i + 1].clone();
-        //     let hidden_layer = &mut self.layers[i];
-
-        //     for n in 0..hidden_layer.len() {
-        //         hidden_layer.0[n].calc_hidden_gradients(&next_layer);
-        //     }
-        // }
         let mut layer_num = self.layers.len() - 2;
         while layer_num > 0 {
-            let next_layer = self.layers[layer_num + 1].clone();
-            let hidden_layer = &mut self.layers[layer_num];
+            let (hidden_layer_vec, next_layer_vec) = self.layers.split_at_mut(layer_num+1);
+            let hidden_layer = hidden_layer_vec.last_mut().unwrap();
+            let next_layer = &mut next_layer_vec[0];
 
             for n in 0..hidden_layer.len() {
-                hidden_layer.0[n].calc_hidden_gradients(&next_layer);
+                hidden_layer.0[n].calc_hidden_gradients(next_layer);
             }
             layer_num -= 1;
         }
 
-        // layer_num = self.layers.len() - 1;
-        // for i in (0..layer_num).rev() {
-        //     let layer = self.layers[i].clone();             // encountered ownership problems here, could bug
-        //     let prev_layer =  &mut self.layers[i - 1];
-
-        //     for n in 0..layer.len() - 1 {
-        //         layer.0[n].update_input_weights(prev_layer);
-        //     }
-        // }
         layer_num = self.layers.len() - 1;
         while layer_num > 0 {
-                // let layer = &mut self.layers[layer_num];             // encountered ownership problems here, could bug
-                // let prev_layer =  &mut self.layers[layer_num - 1];
                 let size = self.layers[layer_num].len();
-                let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);  // NOT SURE IF CORRECT, FIX MID
-                println!("layer_vec: {:?}", layer_vec);
-                println!();
-                println!("prev_layer_vec: {:?}", prev_layer_vec);
+                let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);
                 let layer = &mut layer_vec[0];
-                let prev_layer =  prev_layer_vec.last_mut().unwrap();
+                let prev_layer =  prev_layer_vec.last_mut().unwrap();   // should be correct
 
-                for n in 0..size {
+                for n in 0..size - 1 {
                     layer.0[n].update_input_weights(prev_layer);
-                    // self.layers[layer_num].0[n].update_input_weights(&mut self.layers[layer_num - 1]);
                 }
             layer_num -= 1;
         }
@@ -119,10 +97,16 @@ impl Net {
             self.layers[0].0[i].set_output_val(input_vals[i]);
         }
         for layer_num in 1..self.layers.len() {
-            let prev_layer = self.layers[layer_num - 1].clone();
+            // let prev_layer = self.layers[layer_num - 1].clone();
+            let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);
+            let prev_layer = prev_layer_vec.last_mut().unwrap();
+            let layer = &mut layer_vec[0];
 
-            for n in 0..self.layers[layer_num].len() - 1 {
-                self.layers[layer_num].0[n].feed_forward(&prev_layer);
+            // for n in 0..self.layers[layer_num].len() - 1 {
+            //     self.layers[layer_num].0[n].feed_forward(&prev_layer);
+            // }
+            for n in 0..layer.len() - 1 {
+                layer.0[n].feed_forward(prev_layer);
             }
         }
     }

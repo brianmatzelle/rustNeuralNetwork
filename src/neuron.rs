@@ -31,9 +31,8 @@ impl Neuron {
             gradient: 0.0,
         };
 
-        for _c in 0..num_outputs {
-            neuron.output_weights.push(Connection::new());
-            neuron.output_weights.last_mut().unwrap().weight = random_weight();
+        for _ in 0..num_outputs as usize {
+            neuron.output_weights.push(Connection { weight: random_weight(), delta_weight: 1.0 })
         }
         neuron
     }
@@ -79,9 +78,8 @@ impl Neuron {
     pub fn update_input_weights(&self, prev_layer: &mut Layer) { // done
         for n in 0..prev_layer.len() {
             let neuron = &mut prev_layer.0[n];
-            println!("my_index: {}", self.my_index);
             let old_delta_weight = neuron.output_weights[self.my_index].delta_weight;
-
+            
             let new_delta_weight = 
                 self.eta
                 * neuron.get_output_val()
