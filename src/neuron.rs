@@ -3,8 +3,7 @@ use utils::math::sigmoid;
 use crate::layer::Layer;
 use crate::connection::Connection;
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Neuron {
     output_weights: Vec<Connection>,
     eta: f64,
@@ -54,7 +53,7 @@ impl Neuron {
         let mut sum: f64 = 0.0;
         
         for n in 0..next_layer.len() - 1 {
-            sum += self.output_weights[n].weight * next_layer.0[n].gradient;
+            sum += self.output_weights[n].weight * next_layer[n].gradient;
         }
         sum
     }
@@ -79,7 +78,7 @@ impl Neuron {
     
     pub fn update_input_weights(&self, prev_layer: &mut Layer) { // done
         for n in 0..prev_layer.len() {
-            let neuron = &mut prev_layer.0[n];
+            let neuron = &mut prev_layer[n];
             let old_delta_weight = neuron.output_weights[self.my_index].delta_weight;
             
             let new_delta_weight = 
@@ -98,8 +97,8 @@ impl Neuron {
         let mut sum: f64 = 0.0;
 
         for n in 0..prev_layer.len() {
-            sum += prev_layer.0[n].get_output_val()
-            * prev_layer.0[n].output_weights[self.my_index].weight;
+            sum += prev_layer[n].get_output_val()
+            * prev_layer[n].output_weights[self.my_index].weight;
         }
         println!();
         println!("index[{}] sum: {}", self.my_index, sum);

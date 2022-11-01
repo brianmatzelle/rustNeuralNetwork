@@ -1,7 +1,6 @@
 use crate::neuron::random_weight;
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Connection {
     pub weight: f64,
     pub delta_weight: f64,
