@@ -1,4 +1,3 @@
-use std::fmt::DebugList;
 use utils::math::sigmoid;
 use crate::layer::Layer;
 use crate::connection::Connection;
@@ -36,11 +35,6 @@ impl Neuron {
     }
 
     fn transfer_function(&self, x: f64) -> f64 { // done
-        // let z = x as f32;
-        // println!("x: {}, z: {}", x, z);
-        // let y = tanh(x as f32);
-        // println!("tanh = {}", y);
-        // tanh(x as f32) as f64
         sigmoid(x)
     }
 
@@ -100,11 +94,11 @@ impl Neuron {
             sum += prev_layer[n].get_output_val()
             * prev_layer[n].output_weights[self.my_index].weight;
         }
-        println!();
-        println!("index[{}] sum: {}", self.my_index, sum);
+        // println!();
+        // println!("index[{}] sum: {}", self.my_index, sum);
 
         self.output_val = self.transfer_function(sum);
-        println!("output: {}", self.output_val);
-        println!();
+        // println!("output: {}", self.output_val);
+        // println!();
     }
 }

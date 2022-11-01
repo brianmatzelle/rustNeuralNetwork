@@ -1,18 +1,15 @@
 use std::fs::File;
-use std::io::{self, BufReader, BufRead, Read};
+use std::io::{BufReader, BufRead, Read};
 
 pub struct TrainingData {
-    // training_data_file: File,
     pub reader: BufReader<File>,
 }
 
 impl TrainingData { 
     pub fn new(filename: &str) -> TrainingData {
-        let t = TrainingData {
-            // training_data_file: File::open(filename).unwrap(),
+        TrainingData {
             reader: BufReader::new(File::open(filename).unwrap()),
-        };
-        t
+        }    
     }
 
     pub fn get_topology(&mut self, topology: &mut Vec<u8>) {
@@ -48,7 +45,6 @@ impl TrainingData {
     pub fn get_target_outputs(&self, target_vals: &mut Vec<f64>, line: &mut String) -> usize{
         target_vals.clear();
         let parsed_string: Vec<&str> = line.split(' ').collect();
-        // println!("Parsed target: {}", parsed_string[1]);
         target_vals.push(parsed_string[1].parse::<f64>().unwrap());
 
         target_vals.len()
