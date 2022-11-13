@@ -8,8 +8,10 @@ pub struct Net {    // done
     layers: Vec<Layer>,
     error: f64,
     recent_average_error: f64,
-    recent_average_smoothing_factor: f64,
+    // recent_average_smoothing_factor: f64,
 }
+
+static recent_average_smoothing_factor: f64 = 100.0;
 
 impl Net {
     pub fn new(topology: &Vec<u8>) -> Net { // done
@@ -17,7 +19,7 @@ impl Net {
             layers: Vec::new(),
             error: 0.0,
             recent_average_error: 0.0,
-            recent_average_smoothing_factor: 100.0,
+            // recent_average_smoothing_factor: 100.0,
         };
         let num_layers = topology.len();
         for layer_num in 0..num_layers {
@@ -41,7 +43,7 @@ impl Net {
 
     pub fn get_results(&mut self, result_vals: &mut Vec<f64>) { // done
         result_vals.clear();
-        for n in 0..self.layers.last().unwrap().len() {
+        for n in 0..self.layers.last().unwrap().len() - 1 {
             result_vals.push(self.layers.last_mut().unwrap()[n].get_output_val());
         }
     }
@@ -58,8 +60,8 @@ impl Net {
         self.error = self.error.sqrt();
 
         self.recent_average_error = 
-            (self.recent_average_error * self.recent_average_smoothing_factor + self.error)
-            / (self.recent_average_smoothing_factor + 1.0);
+            (self.recent_average_error * recent_average_smoothing_factor + self.error)
+            / (recent_average_smoothing_factor + 1.0);
         
         for n in 0..output_layer.len() - 1 {
             output_layer[n].calc_output_gradients(target_vals[n]);
@@ -101,13 +103,9 @@ impl Net {
             let (prev_layer_vec, layer_vec) = self.layers.split_at_mut(layer_num);
             let prev_layer = prev_layer_vec.last_mut().unwrap();
             let layer = &mut layer_vec[0];
-            // println!("prev_layer[{}]: {:?}", layer_num-1, prev_layer);
             for n in 0..layer.len() - 1 {
                 layer[n].feed_forward(prev_layer);
             }
-            // println!();
-            // println!("cur_layer[{}]: {:?}", layer_num, layer);
-            // println!("------------------------------------------------------------");
         }
     }
 

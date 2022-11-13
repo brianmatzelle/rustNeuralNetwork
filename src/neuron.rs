@@ -5,40 +5,45 @@ use crate::connection::Connection;
 #[derive(Debug, Clone)]
 pub struct Neuron {
     output_weights: Vec<Connection>,
-    eta: f64,
-    alpha: f64,
+    // eta: f64,
+    // alpha: f64,
     output_val: f64,
     my_index: usize,
     gradient: f64,
 }
-pub fn random_weight() -> f64 { // done ? could bug
-    let rng = rand::random::<f64>();
-    let rand_weight = rng / 2147483647.0;
-    rand_weight
-}
+
+static eta: f64 = 0.15;
+static alpha: f64 = 0.5;
 
 impl Neuron {
     pub fn new(num_outputs: u8, my_index: usize) -> Neuron { // done
         let mut neuron = Neuron {
             output_weights: Vec::new(),
-            eta: 0.15,
-            alpha: 0.5,
+            // eta: 0.15,
+            // alpha: 0.5,
             output_val: 0.0,
             my_index,
-            gradient: 1.0,
+            gradient: 0.0,
         };
 
         for _ in 0..num_outputs as usize {
-            neuron.output_weights.push(Connection { weight: random_weight(), delta_weight: 1.0 })
+            neuron.output_weights.push(Connection { weight: Self::random_weight(), delta_weight: 0.0 })
         }
         neuron
     }
 
-    fn transfer_function(&self, x: f64) -> f64 { // done
+    fn random_weight() -> f64 { // done ? could bug
+        let rng = rand::random::<f64>();
+        println!("rng:{}", rng);
+        let rand_weight = rng / 2147483647.0;
+        rand_weight
+    }
+
+    fn transfer_function(x: f64) -> f64 { // done
         sigmoid(x)
     }
 
-    fn transfer_function_derivative(&self, x: f64) -> f64 { // done
+    fn transfer_function_derivative(x: f64) -> f64 { // done
         (1.0 - x) * x
     }
 
@@ -62,12 +67,12 @@ impl Neuron {
 
     pub fn calc_output_gradients(&mut self, target_val: f64) { // done
         let delta = target_val - self.output_val;
-        self.gradient = delta * self.transfer_function_derivative(self.output_val);
+        self.gradient = delta * Self::transfer_function_derivative(self.output_val);
     }
 
     pub fn calc_hidden_gradients(&mut self, next_layer: &Layer) { // done
         let dow = self.sum_dow(next_layer);
-        self.gradient = dow * self.transfer_function_derivative(self.output_val);
+        self.gradient = dow * Self::transfer_function_derivative(self.output_val);
     }
     
     pub fn update_input_weights(&self, prev_layer: &mut Layer) { // done
@@ -76,10 +81,10 @@ impl Neuron {
             let old_delta_weight = neuron.output_weights[self.my_index].delta_weight;
             
             let new_delta_weight = 
-                self.eta
+                eta
                 * neuron.get_output_val()
                 * self.gradient
-                * self.alpha
+                * alpha
                 * old_delta_weight;
 
             neuron.output_weights[self.my_index].delta_weight = new_delta_weight;
@@ -97,7 +102,7 @@ impl Neuron {
         // println!();
         // println!("index[{}] sum: {}", self.my_index, sum);
 
-        self.output_val = self.transfer_function(sum);
+        self.output_val = Self::transfer_function(sum);
         // println!("output: {}", self.output_val);
         // println!();
     }
